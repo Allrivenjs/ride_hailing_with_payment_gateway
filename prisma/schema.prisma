@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://user:password@localhost:5432/ride_hailing?schema=public"
+}
+
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name       String
+  lastname     String
+  email        String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  riders       Rider[]
+  drivers      Driver[]
+}
+
+model Rider {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  user         User     @relation(fields: [user_id], references: [id])
+  form_payment   FormPayment
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  card         Card[]
+  travels      Travel[]
+}
+
+enum FormPayment {
+  CREDIT_CARD
+  DEBIT_CARD
+}
+
+model Card {
+  id                 Int         @id @default(autoincrement())
+  card_type          String
+  last_digits        String
+  expiration_date    DateTime
+  token_card         String
+  token_expiration   DateTime
+  created_at         DateTime    @default(now())
+  updated_at         DateTime    @updatedAt
+  rider              Rider      @relation(fields: [rider_id], references: [id])
+  rider_id           Int
+}
+
+model Travel {
+  id                      Int      @id @default(autoincrement())
+  date                    DateTime
+  origin                  String
+  destination             String
+  distance_in_km          Float
+  duration_in_minutes     Int
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+  rider                   Rider   @relation(fields: [rider_id], references: [id])
+  rider_id                Int
+  driver                  Driver? @relation(fields: [driver_id], references: [id])
+  driver_id               Int?
+}
+
+model Driver {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  user         User     @relation(fields: [user_id], references: [id])
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  travels      Travel[]
+}
