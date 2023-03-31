@@ -1,31 +1,58 @@
 import {Injectable} from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import {ray} from "node-ray";
+
 
 @Injectable()
 export class CalculateService {
-    calculateAmount(distance: number, duration: number): number {
+    private readonly header: object = {
+        headers: {
+            'Authorization': `${process.env.TOKEN_OPENROUTE_SERVICE}`,
+            'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+    }
+    private dataResponse: {
+        distance_in_km: number,
+        duration_in_minutes: number,
+        origin: string,
+        destination: string,
+        date?: Date
+    } = {
+        distance_in_km: 0,
+        duration_in_minutes: 0,
+        origin: "",
+        destination: "",
+    };
+    constructor(private readonly httpService: HttpService) {}
+    calculateAmount(): number {
+        const {distance_in_km, duration_in_minutes} = this.dataResponse;
         const baseFee = 3500; // COP $3500 cuota base
-        const distanceFee = distance * 1000; // COP $1000 por cada km
-        const durationFee = duration * 200; // COP $200 por cada minuto transcurrido
-
+        const distanceFee = distance_in_km * 1000; // COP $1000 por cada km
+        const durationFee = duration_in_minutes * 200; // COP $200 por cada minuto transcurrido
         return baseFee + distanceFee + durationFee;
     }
 
-    calculateDuration(start: Date, end: Date): number {
-        const durationMs = end.getTime() - start.getTime();
-        return Math.round(durationMs / (1000 * 60)); //durationMin
+    getResultResponse(): object {
+        return this.dataResponse;
     }
 
-    toRad(x: number): number {
-        return x * Math.PI / 180;
+    persistenInformation(): void {
+
+
     }
-    calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-        const R = 6371; // radio de la Tierra en km
-        const dLat = this.toRad(lat2 - lat1);
-        const dLon = this.toRad(lon2 - lon1);
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        const d = R * c; // distancia en km
-        return d;
+
+    async getTimeDurationAndDistance(lat1: number, lon1: number, lat2: number, lon2: number): Promise<this> {
+        const { data } = await this.httpService.axiosRef.post(`https://api.openrouteservice.org/v2/matrix/driving-car`,
+          `{"locations":[[${lat1},${lon1}],[${lat2},${lon2}]],"metrics":["distance","duration"],"resolve_locations":"true","units":"km"}`, this.header);
+        this.dataResponse = {
+            distance_in_km: data.distances[0][1],
+            duration_in_minutes: data.durations[0][1] / 60,
+            origin: data.destinations[0],
+            destination: data.destinations[1],
+            date: new Date()
+        };
+        return this;
     }
 
 

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import { HttpModule } from '@nestjs/axios';
 import { WompiService } from './app/services/wompi/wompi.service';
 import { RidesController } from './app/controllers/rides/rides.controller';
 import { CalculateService } from './app/services/calculate/calculate.service';
@@ -11,10 +11,9 @@ import { CardService } from './app/services/models/card/card.service';
 import { TravelService } from './app/services/models/travel/travel.service';
 import { DriverService } from './app/services/models/driver/driver.service';
 import {PrismaClient} from "@prisma/client";
-const prisma = new PrismaClient();
 @Module({
-  imports: [],
+  imports: [ HttpModule ],
   controllers: [AppController, RidesController],
-  providers: [AppService, WompiService, CalculateService, { provide: PrismaClient, useValue: prisma  }, UserService, RiderService, CardService, TravelService, DriverService],
+  providers: [AppService, WompiService, CalculateService, PrismaClient, UserService, RiderService, CardService, TravelService, DriverService],
 })
 export class AppModule {}
