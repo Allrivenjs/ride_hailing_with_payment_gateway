@@ -10,16 +10,16 @@ export class RidesController {
     @Post('/payment-source')
     async createPaymentSource(@Body() body: { customerEmail: string, token: string }) {
         const { customerEmail, token } = body;
-        const paymentSourceId = await this.wompiService.createPaymentSource(customerEmail, token);
-        return { paymentSourceId };
+        // const paymentSourceId = await this.wompiService.createPaymentSource(customerEmail, token);
+        // return { paymentSourceId };
     }
 
     @Post('/finish')
     async finishRide(@Body() body: { rideId: string, finalLocation: { lat1: number, lon1: number, lat2: number, lon2: number }, duraction: {start: Date, end: Date } }) {
         const { rideId, finalLocation: { lat1, lat2, lon2, lon1 }, duraction: { start, end } } = body;
-        const distance = this.c.calculateDistance( lat1, lon1, lat2, lon2 );
-        const rideDuration = this.c.calculateDuration(start, end);
-        const totalAmount = this.c.calculateAmount(distance, rideDuration);
+        // const distance = this.c.calculateDistance( lat1, lon1, lat2, lon2 );
+        // const rideDuration = this.c.calculateDuration(start, end);
+        // const totalAmount = this.c.calculateAmount(distance, rideDuration);
 
         //crear funcion. obtener el ID de la fuente de pago del ciclista
         // const paymentSourceId = await getPaymentSourceId(rideId); // obtener el ID de la fuente de pago del cliente

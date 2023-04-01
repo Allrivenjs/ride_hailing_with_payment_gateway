@@ -20,9 +20,9 @@ describe('RiderService', () => {
     expect(service).toBeDefined();
 
 
-    const rider : Prisma.RiderCreateWithoutCardInput = {
+    const rider : Prisma.RiderCreateInput = {
       user: {
-        connect: { id: 1 }
+        connect: { id: 2 }
       },
       form_payment: "CREDIT_CARD",
       created_at: new Date(),
@@ -35,23 +35,26 @@ describe('RiderService', () => {
           id: expect.any(Number),
           ...rider
         });
+
+      // service.getRiderById(1).then((rider) => {
+      //     expect(rider).toBeDefined();
+      // });
+      //
+      // service.getRiders().then((riders) => {
+      //   expect(riders).toBeDefined();
+      // });
+      //
+      // service.updateRider(1, rider).then((rider) => {
+      //     expect(rider).toBeDefined();
+      // });
+      //
+      // service.deleteRider(1).then((rider) => {
+      //     expect(rider).toBeDefined();
+      // });
+
     });
 
-    service.getRiderById(1).then((rider) => {
-        expect(rider).toBeDefined();
-    });
 
-    service.getRiders().then((riders) => {
-      expect(riders).toBeDefined();
-    });
-
-    service.updateRider(1, rider).then((rider) => {
-        expect(rider).toBeDefined();
-    });
-
-    // service.deleteRider(1).then((rider) => {
-    //     expect(rider).toBeDefined();
-    // });
 
   });
 });

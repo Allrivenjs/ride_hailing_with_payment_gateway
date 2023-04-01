@@ -42,13 +42,26 @@ model Card {
   id                 Int         @id @default(autoincrement())
   card_type          String
   last_digits        String
-  expiration_date    DateTime
+  expiration_date    String
   token_card         String
   token_expiration   DateTime
+  payload            String     @default("")
   created_at         DateTime    @default(now())
   updated_at         DateTime    @updatedAt
   rider              Rider       @relation(fields: [rider_id], references: [id])
   rider_id           Int
+}
+
+
+model Payment {
+  id                 Int         @id @default(autoincrement())
+  amount             Float
+  currency           String
+  status             String
+  created_at         DateTime    @default(now())
+  updated_at         DateTime    @updatedAt
+  travel             Travel      @relation(fields: [travel_id], references: [id])
+  travel_id          Int @unique
 }
 
 model Travel {
@@ -64,6 +77,7 @@ model Travel {
   rider_id                Int
   driver                  Driver? @relation(fields: [driver_id], references: [id])
   driver_id               Int?
+  payment                 Payment?
 }
 
 model Driver {

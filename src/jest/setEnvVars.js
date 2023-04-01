@@ -5,3 +5,5 @@ process.env.POSTGRES_USER="user";
 process.env.POSTGRES_PASSWORD="password";
 process.env.POSTGRES_DB="ride_hailing";
 process.env.TOKEN_OPENROUTE_SERVICE="5b3ce3597851110001cf6248371183c5d69c41d184c801efce72e411";
+WOMPI_PUBLIC_KEY="pub_test_Q5yDA9xoKdePzhSGeVe9HAez7HgGORGf";
+WOMPI_URL="https://sandbox.wompi.co/v1/"

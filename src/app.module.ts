@@ -11,9 +11,10 @@ import { CardService } from './app/services/models/card/card.service';
 import { TravelService } from './app/services/models/travel/travel.service';
 import { DriverService } from './app/services/models/driver/driver.service';
 import {PrismaClient} from "@prisma/client";
+import { PaymentService } from './app/services/models/payment/payment.service';
 @Module({
   imports: [ HttpModule ],
   controllers: [AppController, RidesController],
-  providers: [AppService, WompiService, CalculateService, PrismaClient, UserService, RiderService, CardService, TravelService, DriverService],
+  providers: [AppService, WompiService, CalculateService, PrismaClient, UserService, RiderService, CardService, TravelService, DriverService, PaymentService],
 })
 export class AppModule {}

@@ -1,61 +1,66 @@
 import { Injectable } from '@nestjs/common';
-import axiosClient, {env} from "../../../config/axios/AxiosServices";
+import { HttpService } from "@nestjs/axios";
+import { ray } from "node-ray";
+import { CardService } from "../models/card/card.service";
+import { Prisma } from "@prisma/client";
+
+export interface WompiCardData {
+    "number": string,
+    "exp_month": string,
+    "exp_year": string,
+    "cvc": string,
+    "card_holder": string,
+}
+
+export interface WompichargeData {
+    "amount_in_cents": number,
+    "currency": string,
+    "customer_email": string,
+    "payment_method": {
+        "installments": number,
+        "type": string,
+        "token": string
+    }
+}
+
 
 @Injectable()
 export class WompiService {
-    async createPaymentSource(customerEmail: string, token: string){
-        const url = `/customers`;
-        const response = await axiosClient.post(url, {
-            email: customerEmail,
-            source: {
-                type: "CARD",
-                token: token
-            }
-        },
-            {
-                auth: {
-                    username: env.WOMPI_PRIVATE_KEY,
-                    password: "",
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'User-Agent': 'MyApp/1.0.0',
-                    'Authorization': `Bearer ${env.WOMPI_PUBLIC_KEY}`,
-                }
-            }
-        );
-        console.log(response.data.data.id);
-        return response.data.data.id;
+    private readonly url = 'https://sandbox.wompi.co/v1'
+    private readonly headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer pub_test_Q5yDA9xoKdePzhSGeVe9HAez7HgGORGf'
     }
 
-    async createTransaction(
-        paymentSourceId: string,
-        amount: number,
-        currency: string,
-        description: string,
-    ){
-        const url = `/transactions`;
-        const response = await axiosClient.post(url, {
-            payment_source_id: paymentSourceId,
-            amount_in_cents: amount * 100,
-            currency: currency,
-            description: description,
-        },
-            {
-                auth: {
-                    username: env.WOMPI_PRIVATE_KEY,
-                    password: "",
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'User-Agent': 'MyApp/1.0.0',
-                    'Authorization': `Bearer ${env.WOMPI_PUBLIC_KEY}`,
-                }
-            }
-        );
-        console.log(response.data.data.id);
-        return response.data.data.id;
+
+    constructor(private readonly httpService: HttpService, private readonly card: CardService) {}
+
+
+    async createToken(d: WompiCardData, RiderId: number) {
+        const { data } = await this.httpService.axiosRef.post(`${this.url}/tokens/cards`, d, { headers: this.headers });
+
+        const card: Prisma.CardCreateInput   = {
+            card_type: data.data.brand,
+            last_digits: data.data.last_four,
+            expiration_date: `${data.data.exp_month}/${data.data.exp_year}`,
+            token_card: data.data.id,
+            token_expiration: data.data.expires_at,
+            rider: {
+                connect: {id: RiderId}
+            },
+            payload: JSON.stringify(data)
+        }
+        await this.card.createCard(card)
+        return data;
     }
+
+
+    async createCharge(d: WompichargeData) {
+        const { data } = await this.httpService.axiosRef.post(`${this.url}/tokens/cards`, d, { headers: this.headers });
+        return data;
+    }
+
+
+
 }

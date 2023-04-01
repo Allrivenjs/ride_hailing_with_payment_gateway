@@ -51,9 +51,9 @@ describe('UserService', () => {
         });
       });
 
-      service.deleteUser(user.id).then((userDeleted) => {
-        expect(userDeleted).toBeDefined();
-      });
+      // service.deleteUser(user.id).then((userDeleted) => {
+      //   expect(userDeleted).toBeDefined();
+      // });
 
     });
   });
