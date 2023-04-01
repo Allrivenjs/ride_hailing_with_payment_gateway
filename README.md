@@ -1,73 +1,75 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## Ride hailing
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Simple API for a Ride Hailing like app
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Getting started
 
-## Description
+To run this project, you must clone down this repository. You will also need `node` and `npm` installed globally on your machine.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Setup dockerfile:
 
-## Installation
+`docker compose -f .\docker-compose.yaml up -d --build`
 
-```bash
-$ yarn install
-```
+environment variables in docker
+````
+- POSTGRES_HOST=db
+- POSTGRES_PORT=5432
+- POSTGRES_USER=user
+- POSTGRES_PASSWORD=password
+- POSTGRES_DB=ride_hailing
+- DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public"
+- WOMPI_PUBLIC_KEY=pub_test_EjcgGnHhlLadwW52vNRlX2iGM31wRYLM
+- WOMPI_PRIVATE_KEY=prv_test_cldsXv764CudmClLoxc9OmRGB4R2noq1
+- WOMPI_URL=https://sandbox.wompi.co/v1/
+- TOKEN_OPENROUTE_SERVICE=5b3ce3597851110001cf6248371183c5d69c41d184c801efce72e411
+````
 
-## Running the app
+env environment variables
 
-```bash
-# development
-$ yarn run start
+````
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public"
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+POSTGRES_DB=ride_hailing
+TOKEN_OPENROUTE_SERVICE=5b3ce3597851110001cf6248371183c5d69c41d184c801efce72e411
+WOMPI_PUBLIC_KEY=pub_test_Q5yDA9xoKdePzhSGeVe9HAez7HgGORGf
+WOMPI_PRIVATE_KEY=prv_prod_cldsXv764CudmClLoxc9OmRGB4R2noq1
+#DATABASE_URL="postgresql://postgres:postgres@postgres:5432/Todo?schema=public"
+WOMPI_URL=https://sandbox.wompi.co/v1/
 
-# watch mode
-$ yarn run start:dev
+````
+## Note:
+All these variables are public, so there is no relevance in publishing them in this project.
 
-# production mode
-$ yarn run start:prod
-```
+---
 
-## Test
+Install dependencies:
 
-```bash
-# unit tests
-$ yarn run test
+`yarn install`
 
-# e2e tests
-$ yarn run test:e2e
+Run in development:
 
-# test coverage
-$ yarn run test:cov
-```
+`yarn run start`
 
-## Support
+Run in development with watch mode:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+`yarn run start:dev`
 
-## Stay in touch
+Run application in production mode:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+`yarn run start:prod`
 
-## License
+Run test suite:
 
-Nest is [MIT licensed](LICENSE).
+`yarn run test`
+
+## Stack
+
+This application was built with the following stack
+
+- NestJS
+- Typescript
+- Prisma
+  - PostgresSQL
