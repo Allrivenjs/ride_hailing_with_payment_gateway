@@ -28,7 +28,7 @@ describe('CardService', () => {
       card_type: "CREDIT_CARD",
       token_card: "123456789",
       last_digits: "1234",
-      expiration_date: new Date("12/12/2024"),
+      expiration_date: "12/12/2024",
       token_expiration: new Date("12/12/2025"),
       created_at: new Date(),
       updated_at: new Date(),
