@@ -14,9 +14,13 @@ describe('CalculateService', () => {
     service = module.get<CalculateService>(CalculateService);
   });
 
-  it('should be defined', async () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it("shouldRunTestSuite", async function() {
     await service.getTimeDurationAndDistance(8.690958, 49.404662, 8.687868, 49.390139);
     expect(service.calculateAmount()).toBeDefined();
   });
+
 });

@@ -6,6 +6,9 @@ import {RiderService} from "../rider/rider.service";
 describe('CardService', () => {
   let service: CardService;
   let rider: RiderService;
+  let card: Card;
+
+  let c : Prisma.CardCreateInput;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -14,16 +17,10 @@ describe('CardService', () => {
 
     service = module.get<CardService>(CardService);
     rider = module.get<RiderService>(RiderService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-
-
-
-    const c : Prisma.CardCreateInput = {
+    const r = await rider.getRiders();
+    c = {
       rider: {
-        connect: { id: 1}
+        connect: { id: r[0].id }
       },
       card_type: "CREDIT_CARD",
       token_card: "123456789",
@@ -33,31 +30,46 @@ describe('CardService', () => {
       created_at: new Date(),
       updated_at: new Date(),
     }
-
-    service.createCard(c).then((card) => {
-        expect(card).toBeDefined();
-        expect(card).toEqual({
-          id: expect.any(Number),
-          ...card
-        });
-      service.getCardById(card.id).then((card) => {
-        expect(card).toBeDefined();
-
-      });
-
-      service.getCards().then((cards) => {
-        expect(cards).toBeDefined();
-      });
-
-      service.updateCard(card.id, card).then((card) => {
-        expect(card).toBeDefined();
-      });
-
-      // service.deleteCard(card.id).then((card) => {
-      //     expect(card).toBeDefined();
-      // });
-    });
-
-
   });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
+  it("should create", function() {
+    service.createCard(c).then((_card) => {
+      expect(_card).toBeDefined();
+      expect(_card).toEqual({
+        id: expect.any(Number),
+        ..._card
+      });
+
+      card = _card;
+    });
+  });
+
+  it("should get", function() {
+    service.getCardById(card.id).then((card) => {
+      expect(card).toBeDefined();
+    });  
+  });
+
+  it("should get all", function() {
+    service.getCards().then((cards) => {
+      expect(cards).toBeDefined();
+    });
+  });
+
+  it("should update", function() {
+    service.updateCard(card.id, card).then((card) => {
+      expect(card).toBeDefined();
+    });
+  });
+
+  it("should delete", function() {
+    // service.deleteCard(card.id).then((card) => {
+    //     expect(card).toBeDefined();
+    // });
+  });
+
 });
