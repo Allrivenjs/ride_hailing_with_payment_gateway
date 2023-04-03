@@ -53,6 +53,10 @@ Install dependencies:
 
 `yarn install`
 
+Run build after use:
+
+`yarn run build`
+
 Run in development:
 
 `yarn run start`
