@@ -22,7 +22,6 @@ environment variables in docker
 - POSTGRES_DB=ride_hailing
 - DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public"
 - WOMPI_PUBLIC_KEY=pub_test_EjcgGnHhlLadwW52vNRlX2iGM31wRYLM
-- WOMPI_PRIVATE_KEY=prv_test_cldsXv764CudmClLoxc9OmRGB4R2noq1
 - WOMPI_URL=https://sandbox.wompi.co/v1/
 - TOKEN_OPENROUTE_SERVICE=5b3ce3597851110001cf6248371183c5d69c41d184c801efce72e411
 ````
@@ -38,7 +37,6 @@ POSTGRES_PASSWORD=password
 POSTGRES_DB=ride_hailing
 TOKEN_OPENROUTE_SERVICE=5b3ce3597851110001cf6248371183c5d69c41d184c801efce72e411
 WOMPI_PUBLIC_KEY=pub_test_Q5yDA9xoKdePzhSGeVe9HAez7HgGORGf
-WOMPI_PRIVATE_KEY=prv_prod_cldsXv764CudmClLoxc9OmRGB4R2noq1
 #DATABASE_URL="postgresql://postgres:postgres@postgres:5432/Todo?schema=public"
 WOMPI_URL=https://sandbox.wompi.co/v1/
 
