@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { PaymentService } from "../models/payment/payment.service";
 import { CardService } from "../models/card/card.service";
 import { NotFoundException } from '@nestjs/common';
+import { ray } from "node-ray";
 
 @Injectable()
 export class businessLogic {
@@ -43,6 +44,7 @@ export class businessLogic {
     const data = distance.getResultResponse();
     const duration = data.duration_in_minutes;
     const distance_in_km = data.distance_in_km;
+    // console.log(data);
     return await this.t.createTravel({
       rider: {
         connect: {
@@ -52,12 +54,13 @@ export class businessLogic {
       driver: {
         connect: { id: driver.id }
       },
-      origin: data.origin,
-      destination: data.destination,
+      origin: JSON.stringify(data.origin),
+      destination: JSON.stringify(data.destination),
       date: data.date,
-      duration_in_minutes: duration,
+      duration_in_minutes: Number(duration),
       distance_in_km: distance_in_km,
-      price: price,
+      //convert to cents
+      price: price * 100,
       status: TravelService.TRAVEL_CREATED
     });
   }
@@ -70,6 +73,12 @@ export class businessLogic {
     const travel = await this.t.getTravelById(travel_id);
     if (!travel) throw new NotFoundException('Travel not found');
     const { price, rider_id } = travel;
+
+    const existTravelPayment = await this.p.getPaymentByTravelId(travel_id);
+    if (existTravelPayment){
+      return await this.t.updateTravel(travel_id, {status: TravelService.TRAVEL_FINISHED});
+    }
+
     const rider = await this.r.getRiderById(rider_id);
     if (!rider) throw new NotFoundException('Rider not found');
     const user = await this.u.getUserById(rider.user_id);
@@ -90,7 +99,7 @@ export class businessLogic {
       reference: uuidv4(),
     }
 
-    const payment = await this.wompiService.createCharge(token);
+    const payment = await this.wompiService.createCharge(dataPayment);
     const dataPay: Prisma.PaymentCreateInput = {
       travel: {
         connect: { id: travel_id }
@@ -100,7 +109,9 @@ export class businessLogic {
       status: payment.status,
       reference: dataPayment.reference,
     }
+
     await this.p.create(dataPay);
+
     return await this.t.updateTravel(travel_id, {status: TravelService.TRAVEL_FINISHED});
 
   }
@@ -122,7 +133,8 @@ export class businessLogic {
       token_card: card.token_card,
       expiration_date: card.expiration_date,
       last_digits: card.last_digits,
-      token_expiration: card.expiration_date,
+      token_expiration: card.token_expiration,
+
     }
     return await this.ca.createCard(data);
   }

@@ -43,6 +43,8 @@ WOMPI_URL=https://sandbox.wompi.co/v1/
 ## Note:
 All these variables are public, so there is no relevance in publishing them in this project.
 
+I must emphasize that if you run the project from docker, the `url` environment variable should look like this = `"postgresql://user:password@db:5432/ride_hailing?schema=public"`, otherwise it should stay like this:  `"postgresql://user:password@localhost:5432/ride_hailing?schema=public"`.
+
 ---
 
 Install dependencies:
@@ -64,6 +66,46 @@ Run application in production mode:
 Run test suite:
 
 `yarn run test`
+
+---
+### Recommendations
+First I recommend that you run it mainly before starting the seeds,
+
+> seed.seeders.spec.ts
+
+then you can start the tests, one by one, or all at once.
+
+La estructura es esta:
+``` 
+├──app
+│ ├────controllers
+│ │ └──rides
+│ ├────DTO
+│ ├────middlewares
+│ │ ├────all-exceptions-filter
+│ │ └────correlation-id
+│ └────services
+│ ├─────businessLogic
+│ ├────calculate
+│ ├────models
+│ │ ├──card
+│ │ ├──driver
+│ │ ├───payment
+│ │ ├──rider
+│ │ ├──travel
+│ │ └──user
+│ └────wompi
+├───config
+└───jest
+
+```
+
+in each one you will find their respective test of the functionalities.
+
+This is the relational structure that was created for this business model.
+![img.png](img.png)
+
+
 
 ## Stack
 

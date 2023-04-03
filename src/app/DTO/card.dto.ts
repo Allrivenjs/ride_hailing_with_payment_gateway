@@ -10,8 +10,6 @@ class cardDto {
     @IsNotEmpty()
     exp_year: string;
     @IsNotEmpty()
-    @Min(3)
-    @Max(3)
     cvc: string;
     @IsNotEmpty()
     card_holder: string;
@@ -30,6 +28,12 @@ export class getRiderDTO {
     @IsNotEmpty()
     @IsNumber()
     rider_id: number;
+}
+
+export class getTravelDTO {
+    @IsNotEmpty()
+    @IsNumber()
+    travel_id: number;
 }
 export class paymentSourceDto {
     @IsNotEmpty()

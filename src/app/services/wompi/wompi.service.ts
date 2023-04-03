@@ -3,6 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import { CardService } from "../models/card/card.service";
 import { Card, Prisma } from "@prisma/client";
 import { WompiCardData, WompichargeData } from "./wompi.interface";
+import { ray } from "node-ray";
 
 
 @Injectable()
@@ -75,13 +76,13 @@ export class WompiService {
     // print(response.json())
 
     async createCharge(d: WompichargeData) {
-        const { data: { data } } = await this.httpService.axiosRef
-          .post(`${this.url}/transactions`, d,
-            {
-                headers: this.headers
-            }
-          );
-        return data;
+      const { data: { data } } = await this.httpService.axiosRef
+        .post(`${this.url}/transactions`, d,
+          {
+            headers: this.headers
+          }
+        );
+      return data;
 
     }
 

@@ -3,30 +3,30 @@ import {
   IsObject,
   IsNumber,
   ValidateNested,
-  IsNotEmpty
+  IsNotEmpty, IsString
 } from "class-validator";
 import { Type } from "class-transformer";
 export interface CreateTravelDtoInterface {
   rider_id: string;
   initialLocation: {
-    lat1: number;
-    lon1: number;
-    lat2: number;
-    lon2: number;
+    lat1: string;
+    lon1: string;
+    lat2: string;
+    lon2: string;
   };
 }
 class LocationDto {
-  @IsNumber()
-  lat1: number;
+  @IsString()
+  lat1: string;
 
-  @IsNumber()
-  lon1: number;
+  @IsString()
+  lon1: string;
 
-  @IsNumber()
-  lat2: number;
+  @IsString()
+  lat2: string;
 
-  @IsNumber()
-  lon2: number;
+  @IsString()
+  lon2: string;
 }
 
 

@@ -71,7 +71,7 @@ model Travel {
   origin                  String
   destination             String
   distance_in_km          Float
-  duration_in_minutes     Int
+  duration_in_minutes     Float
   price                   Float
   status                  String
   created_at              DateTime @default(now())

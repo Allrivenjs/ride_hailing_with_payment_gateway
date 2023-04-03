@@ -12,8 +12,8 @@ describe('create seeders for test.', () => {
   it("should create user",async function() {
 
     const fakerUser = () => ({
-      email: faker.name.firstName(),
-      name: faker.internet.email(),
+      name: faker.name.firstName(),
+      email: faker.internet.email(),
       lastname: faker.name.lastName(),
     });
 

@@ -39,7 +39,7 @@ export class CalculateService {
         return this.dataResponse;
     }
 
-    async calculateTimeDurationAndDistance(lat1: number, lon1: number, lat2: number, lon2: number): Promise<this> {
+    async calculateTimeDurationAndDistance(lat1: string, lon1: string, lat2: string, lon2: string): Promise<this> {
         const { data } = await this.httpService.axiosRef.post(`https://api.openrouteservice.org/v2/matrix/driving-car`,
           `{"locations":[[${lat1},${lon1}],[${lat2},${lon2}]],"metrics":["distance","duration"],"resolve_locations":"true","units":"km"}`, this.header);
         this.dataResponse = {
