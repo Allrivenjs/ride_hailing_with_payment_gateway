@@ -1,35 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { ray } from "node-ray";
 import { CardService } from "../models/card/card.service";
 import { Card, Prisma } from "@prisma/client";
-
-export interface WompiCardData {
-    "number": string,
-    "exp_month": string,
-    "exp_year": string,
-    "cvc": string,
-    "card_holder": string,
-}
-
-export interface WompichargeData {
-    "currency": string,
-    "amount_in_cents": number,
-    "customer_email": string,
-    "payment_method": {
-        "type": string,
-        "installments": number,
-        "token": string
-    },
-    "reference": string,
-    "acceptance_token": string
-}
+import { WompiCardData, WompichargeData } from "./wompi.interface";
 
 
 @Injectable()
 export class WompiService {
-    private readonly url = 'https://sandbox.wompi.co/v1'
-    private readonly keypub = "pub_test_Q5yDA9xoKdePzhSGeVe9HAez7HgGORGf";
+    private readonly url = process.env.WOMPI_URL;
+    private readonly keypub = process.env.WOMPI_PUBLIC_KEY;
     private readonly headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -96,16 +75,27 @@ export class WompiService {
     // print(response.json())
 
     async createCharge(d: WompichargeData) {
-        const { data } = await this.httpService.axiosRef
+        const { data: { data } } = await this.httpService.axiosRef
           .post(`${this.url}/transactions`, d,
             {
                 headers: this.headers
             }
           );
-
-        ray(data)
         return data;
 
+    }
+
+    // response= requests.get(url+"/11-1680412541-44452", headers=headers)
+    // print(response.json())
+
+    async verifyStatus(id: string) {
+        const { data } = await this.httpService.axiosRef
+          .get(`${this.url}/transactions/${id}`,
+            {
+                headers: this.headers
+            }
+          );
+        return data;
     }
 
     async getMerchant() {
@@ -115,7 +105,6 @@ export class WompiService {
                 headers: this.headers
             }
           );
-        // ray(presigned_acceptance)
         return presigned_acceptance;
     }
 

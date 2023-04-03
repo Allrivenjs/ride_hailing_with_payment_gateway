@@ -3,6 +3,11 @@ import {Prisma, PrismaClient, Travel} from "@prisma/client";
 
 @Injectable()
 export class TravelService {
+
+    public static readonly TRAVEL_CREATED = 'TRAVEL_CREATED';
+    public static readonly TRAVEL_IN_PROGRESS = 'TRAVEL_IN_PROGRESS';
+    public static readonly TRAVEL_FINISHED = 'TRAVEL_FINISHED';
+
     constructor(private readonly prisma: PrismaClient) {}
 
     async createTravel(data: Prisma.TravelCreateInput): Promise<Travel> {

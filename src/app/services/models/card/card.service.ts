@@ -25,4 +25,14 @@ export class CardService {
         return await this.prisma.card.delete({where: {id}});
     }
 
+    async getCardByRiderId(rider_id: number) {
+        return await this.prisma.card.findFirst({
+            where: {
+                rider_id: rider_id
+            },
+            orderBy: {
+                id: 'desc'
+            },
+        });
+    }
 }

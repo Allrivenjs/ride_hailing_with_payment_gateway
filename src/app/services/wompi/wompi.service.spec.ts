@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { WompichargeData, WompiService } from "./wompi.service";
+import { WompichargeData } from "./wompi.interface";
 import {HttpModule} from "@nestjs/axios";
 import { RiderService } from "../models/rider/rider.service";
 import { CardService } from "../models/card/card.service";
-import { Card, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { ray } from "node-ray";
 import { v4 as uuidv4 } from 'uuid';
+import { WompiService } from "./wompi.service";
 
 describe('WompiService', () => {
   let service: WompiService;
@@ -44,7 +45,7 @@ describe('WompiService', () => {
   });
 
 
-  it("should create charge", async function() {
+  it("should create charge and verify status ", async function() {
 
     const c = await card.getCards();
     expect(c).toBeDefined();
@@ -62,7 +63,10 @@ describe('WompiService', () => {
       "acceptance_token": token
     }
     const charge = await service.createCharge(chargeData);
-    ray(charge);
+    expect(charge).toBeDefined();
+    const status = await service.verifyStatus(charge.id);
+    expect(status).toBeDefined();
   });
+
 
 });

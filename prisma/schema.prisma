@@ -58,6 +58,7 @@ model Payment {
   amount             Float
   currency           String
   status             String
+  reference          String
   created_at         DateTime    @default(now())
   updated_at         DateTime    @updatedAt
   travel             Travel      @relation(fields: [travel_id], references: [id])
@@ -71,6 +72,8 @@ model Travel {
   destination             String
   distance_in_km          Float
   duration_in_minutes     Int
+  price                   Float
+  status                  String
   created_at              DateTime @default(now())
   updated_at              DateTime @updatedAt
   rider                   Rider   @relation(fields: [rider_id], references: [id])

@@ -1,71 +1,56 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import {Card, Prisma, PrismaClient} from "@prisma/client";
+import { faker } from '@faker-js/faker';
 
-// describe('AppController', () => {
-//   let appController: AppController;
-//
-//   beforeEach(async () => {
-//     const app: TestingModule = await Test.createTestingModule({
-//       controllers: [AppController],
-//       providers: [AppService],
-//     }).compile();
-//
-//     appController = app.get<AppController>(AppController);
-//   });
-//
-//   describe('root', () => {
-//     it('should return "Hello World!"', () => {
-//       expect(appController.getHello()).toBe('Hello World!');
-//     });
-//   });
-// });
-//
 
-const { Pool } = require('pg');
-//npm test  app.controller.spec.ts
-describe('testing postgres', () => {
+describe('create seeders for test.', () => {
+  let prisma: PrismaClient;
 
-  let pgPool;
-
-  beforeAll(() => {
-    // console.log(process.env.DATABASE_URL);
-
+  beforeAll(async () => {
+    prisma = new PrismaClient();
   });
 
-  afterAll(async () => {
-    // await pgPool.end();
+  it("should create user",async function() {
+
+    const fakerUser = () => ({
+      email: faker.name.firstName(),
+      name: faker.internet.email(),
+      lastname: faker.name.lastName(),
+    });
+
+    Array.from({length: 10}).forEach(async () => {
+      const user = await prisma.user.create({
+        data: fakerUser(),
+      });
+    });
   });
 
-  it('should test', async () => {
+  it("should create rider",async function() {
+      Array.from({length: 10}).forEach(async (value, index) => {
+        const rider = await prisma.rider.create({
+          data: {
+            user: {
+              connect: {
+                id: index + 1,
+              },
+            },
+            form_payment:"CREDIT_CARD",
+          },
+        });
+      });
+  });
 
-
-    // pgPool = new Pool({
-    //   host: process.env.POSTGRES_HOST,
-    //   user: process.env.POSTGRES_USER,
-    //   database: process.env.POSTGRES_DB,
-    //   password: process.env.POSTGRES_PASSWORD,
-    //   port: process.env.POSTGRES_PORT,
-    //   max: 20,
-    //   idleTimeoutMillis: 30000,
-    //   connectionTimeoutMillis: 2000,
-    // });
-    // // process.env.DATABASE_URL
-    // const client = await pgPool.connect();
-    // console.log(client);
-    // try {
-    //   await client.query('BEGIN');
-    //
-    //   const { rows } = await client.query('SELECT 1 AS "result"');
-    //   expect(rows[0]["result"]).toBe(1);
-    //
-    //   await client.query('ROLLBACK');
-    // } catch(err) {
-    //   throw err;
-    // } finally {
-    //   client.release();
-    // }
-
-  })
+  it("should create driver", function() {
+    Array.from({length: 10}).forEach(async (value, index) => {
+      const rider = await prisma.driver.create({
+        data: {
+          user: {
+            connect: {
+              id: index + 1,
+            },
+          },
+        },
+      });
+    });
+  });
 
 });

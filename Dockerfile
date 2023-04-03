@@ -15,4 +15,4 @@ EXPOSE 3000
 
 # Inicia la aplicación
 CMD ["npx", "prisma", "db", "push"]
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start:debug"]

@@ -1,37 +1,67 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import {WompiService} from "../../services/wompi/wompi.service";
-import {CalculateService} from "../../services/calculate/calculate.service";
+import { Controller, Post, Body, Get, UseFilters } from "@nestjs/common";
+import { CreateTravelDto } from "../../DTO/create-travel.dto";
+import { Logger } from "@nestjs/common";
+import { businessLogic } from "../../services/businessLogic/businessLogic.service";
+import { CardDto, getRiderDTO, paymentSourceDto } from "../../DTO/card.dto";
+import { AllExceptionsFilter } from "../../middlewares/all-exceptions-filter/all-exceptions-filter.pipe";
 
-@Controller('rides')
+
+@Controller('ride')
+@UseFilters(new AllExceptionsFilter())
 export class RidesController {
-    constructor(private readonly wompiService: WompiService,
-                private readonly c: CalculateService) {}
+    private readonly logger: Logger = new Logger(RidesController.name);
 
-    @Post('/payment-source')
-    async createPaymentSource(@Body() body: { customerEmail: string, token: string }) {
-        const { customerEmail, token } = body;
-        // const paymentSourceId = await this.wompiService.createPaymentSource(customerEmail, token);
-        // return { paymentSourceId };
+    constructor(private readonly bl: businessLogic) {}
+    @Get()
+    test(): string {
+        this.logger.log('Controller test of rides');
+        return "Controller test of rides";
+    }
+
+    @Post('/start')
+    async createTravel(@Body() CreateTravelDto: CreateTravelDto) {
+        const { rider_id, initialLocation: { lat1, lat2, lon2, lon1 } } = CreateTravelDto;
+        this.logger.log(`createTravel`);
+        const travel  =  await this.bl.createTravel({ rider_id, initialLocation: { lat1, lat2, lon2, lon1 } });
+        this.logger.log(`travel: ${JSON.stringify(travel)}`);
+        await this.bl.startTravel(travel.id)
+        this.logger.log(`start travel: ${travel.id}`)
+        return travel;
+    }
+
+    @Get('/get-card')
+    async getCard(@Body() rider: getRiderDTO ) {
+        const { rider_id } = rider;
+        this.logger.log(`getCard`);
+        const card = await this.bl.getCardByRiderId(rider_id);
+        this.logger.log(`card: ${JSON.stringify(card)}`);
+        return card;
+    }
+
+    @Post('/create-card')
+    async createPaymentSource(@Body() card: CardDto) {
+        const { rider_id, card: dat } = card;
+        this.logger.log(`createPaymentSource`);
+        const paymentSource = await this.bl.createCard( dat, rider_id );
+        this.logger.log(`paymentSource: ${JSON.stringify(paymentSource)}`);
+        return paymentSource;
+    }
+
+    @Post('/pay')
+    async pay(@Body() body: paymentSourceDto) {
+        const { installment, card_id, travel_id } = body;
+        this.logger.log(`pay`);
+        const pay = await this.bl.payTravel( installment, card_id, travel_id );
+        this.logger.log(`pay: ${JSON.stringify(pay)}`);
+        return pay;
     }
 
     @Post('/finish')
-    async finishRide(@Body() body: { rideId: string, finalLocation: { lat1: number, lon1: number, lat2: number, lon2: number }, duraction: {start: Date, end: Date } }) {
-        const { rideId, finalLocation: { lat1, lat2, lon2, lon1 }, duraction: { start, end } } = body;
-        // const distance = this.c.calculateDistance( lat1, lon1, lat2, lon2 );
-        // const rideDuration = this.c.calculateDuration(start, end);
-        // const totalAmount = this.c.calculateAmount(distance, rideDuration);
-
-        //crear funcion. obtener el ID de la fuente de pago del ciclista
-        // const paymentSourceId = await getPaymentSourceId(rideId); // obtener el ID de la fuente de pago del cliente
-        // const transactionId = await this.wompiService.createTransaction(
-        //     paymentSourceId,
-        //     totalAmount,
-        //     'COP',
-        //     `Pago por servicio de transporte ${rideId}`,
-        // );
-        //
-        // // actualizar estado del viaje y registrar transacción en la base de datos
-        //
-        // return { transactionId };
+    async finishRide(@Body() body: getRiderDTO ) {
+        const { rider_id } = body;
+        this.logger.log(`finishRide`);
+        const finish = await this.bl.finishTravel(rider_id);
+        this.logger.log(`finish: ${JSON.stringify(finish)}`);
+        return finish;
     }
 }

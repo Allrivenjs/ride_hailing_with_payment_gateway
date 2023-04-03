@@ -61,8 +61,8 @@ describe('DriverService', () => {
   });
 
   it("should delete", function() {
-    // service.deleteDriver(_driver.id).then((driver) => {
-    //   expect(driver).toBeDefined();
-    // });
+    service.deleteDriver(_driver.id).then((driver) => {
+      expect(driver).toBeDefined();
+    });
   });
 });

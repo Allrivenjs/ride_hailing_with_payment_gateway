@@ -3,6 +3,14 @@ import { HttpService } from '@nestjs/axios';
 import {ray} from "node-ray";
 
 
+export interface responseInterface {
+    distance_in_km: number,
+    duration_in_minutes: number,
+    origin: string,
+    destination: string,
+    date?: Date
+}
+
 @Injectable()
 export class CalculateService {
     private readonly header: object = {
@@ -12,13 +20,7 @@ export class CalculateService {
             'Content-Type': 'application/json; charset=utf-8'
         },
     }
-    private dataResponse: {
-        distance_in_km: number,
-        duration_in_minutes: number,
-        origin: string,
-        destination: string,
-        date?: Date
-    } = {
+    private dataResponse: responseInterface = {
         distance_in_km: 0,
         duration_in_minutes: 0,
         origin: "",
@@ -33,16 +35,11 @@ export class CalculateService {
         return baseFee + distanceFee + durationFee;
     }
 
-    getResultResponse(): object {
+    getResultResponse(): responseInterface {
         return this.dataResponse;
     }
 
-    persistenInformation(): void {
-
-
-    }
-
-    async getTimeDurationAndDistance(lat1: number, lon1: number, lat2: number, lon2: number): Promise<this> {
+    async calculateTimeDurationAndDistance(lat1: number, lon1: number, lat2: number, lon2: number): Promise<this> {
         const { data } = await this.httpService.axiosRef.post(`https://api.openrouteservice.org/v2/matrix/driving-car`,
           `{"locations":[[${lat1},${lon1}],[${lat2},${lon2}]],"metrics":["distance","duration"],"resolve_locations":"true","units":"km"}`, this.header);
         this.dataResponse = {

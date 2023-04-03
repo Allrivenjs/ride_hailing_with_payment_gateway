@@ -35,7 +35,10 @@ describe('TravelService', () => {
       rider: {
         connect: {id: r[0].id}
       },
-      ...tr2
+      ...tr2,
+      status: "PENDING",
+      price: 100
+
     };
 
   });
@@ -89,9 +92,9 @@ describe('TravelService', () => {
   });
 
   it("should delete", function() {
-    // service.deleteTravel(_travel.id).then((travel) => {
-    //     expect(travel).toBeDefined();
-    // });
+    service.deleteTravel(_travel.id).then((travel) => {
+        expect(travel).toBeDefined();
+    });
   });
 
 
