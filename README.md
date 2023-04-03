@@ -10,8 +10,9 @@ Setup dockerfile:
 
 `docker compose -f .\docker-compose.yaml up -d --build`
 
-Run: 
->  npx prisma migrate dev
+Run:
+
+`npx prisma migrate dev`
 
 environment variables in docker
 ````
