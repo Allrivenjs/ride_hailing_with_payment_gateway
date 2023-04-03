@@ -69,6 +69,14 @@ Run test suite:
 
 `yarn run test`
 
+Run push db:
+
+`npx prisma db push`
+
+Run create migration:
+
+`npx prisma migrate dev`
+
 ---
 ### Recommendations
 First I recommend that you run it mainly before starting the seeds,

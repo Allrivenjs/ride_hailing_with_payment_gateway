@@ -14,5 +14,5 @@ RUN npm install
 EXPOSE 3000
 
 # Inicia la aplicación
-CMD ["npx", "prisma", "db", "push"]
+#CMD ["npx", "prisma", "db", "push"]
 CMD ["npm", "run", "start:prod"]
