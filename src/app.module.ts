@@ -17,7 +17,7 @@ import { CORRELATION_ID_HEADER, CorrelationIdMiddleware } from "./app/middleware
 import { Request, Response } from "express";
 import { businessLogic } from './app/services/businessLogic/businessLogic.service';
 import { AllExceptionsFilter } from "./app/middlewares/all-exceptions-filter/all-exceptions-filter.pipe";
-
+const prisma = new PrismaClient()
 @Module({
   imports: [ HttpModule, LoggerModule.forRoot({
     pinoHttp: {
